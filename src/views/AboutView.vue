@@ -30,20 +30,21 @@
           <table class="table table-hover align-middle text-center">
             <thead class="table-primary">
               <tr>
-                <th>#</th>
-                <th>รหัสนักศึกษา</th>
-                <th>ชื่อ-นามสกุล</th>
-                <th>แผนก</th>
-                <th>วันที่ลงทะเบียน</th>
+                <th>No.</th>
+                <th>Products ID</th>
+                <th>Products Name</th>
+                <th>Products Quantity</th>
+                <th>Products Price</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, index) in users" :key="index">
+                <!-- id | title | price | description | category | image -->
                 <td>{{ index + 1 }}</td>
-                <td>{{ item.id }}</td>
-                <td>{{ item.fullname }}</td>
-                <td>{{ item.department }}</td>
-                 <td>{{ item.tdate }}</td>
+                <td>{{ item.pID }}</td>
+                <td>{{ item.pName }}</td>
+                <td>{{ item.pQuantity }}</td>
+                <td>{{ item.pPrice }}</td>
               </tr>
             </tbody>
           </table>

@@ -8,7 +8,7 @@
                     <!-- Header -->
                     <div class="card-header text-center text-white rounded-top-4"
                         style="background: linear-gradient(135deg, #0d6efd, #0dcaf0);">
-                        <h4 class="mb-1 fw-bold">📋 ลงทะเบียน</h4>
+                        <h4 class="mb-1 fw-bold">📋 เพิ่มสินค้า</h4>
                         <small>กรอกข้อมูลเพื่อส่งเข้า n8n Webhook</small>
                     </div>
 
@@ -26,24 +26,49 @@
 
 
                             <div class=" mb-3">
-                                <label class="form-label">รหัสนักศึกษา *</label>
-                                <input type="text" class="form-control" v-model="data.id" required>
+                                <label class="form-label">รหัสสินค้า *</label>
+                                <input type="text" class="form-control" v-model="data.pID" required>
                             </div>
-
+<!-- [
+  {
+    "รหัสสินค้า": "P001",
+    "ชื่อสินค้า": "สมุดปกแข็ง",
+    "จำนวน": 20,
+    "ราคา": 50
+  },
+  {
+    "รหัสสินค้า": "P002",
+    "ชื่อสินค้า": "ยางลบ",
+    "จำนวน": 24,
+    "ราคา": 10
+  }
+] -->
                             <div class=" mb-3">
-                                <label class="form-label">ชื่อ-นามสกุล *</label>
-                                <input type="text" class="form-control" v-model="data.fullname" required>
+                                <label class="form-label">ชื่อสินค้า *</label>
+                                <input type="text" class="form-control" v-model="data.pName" required>
+                            </div>
+                            <div class=" mb-3">
+                                <label class="form-label">จำนวน *</label>
+                                <input type="text" class="form-control" v-model="data.pQuantity" required>
+                            </div>
+                            <div class=" mb-3">
+                                <label class="form-label">ราคา *</label>
+                                <input type="text" class="form-control" v-model="data.pPrice" required>
+                            </div>
+                            <div class=" mb-3">
+                                <label class="form-label">E-Mail *</label>
+                                <input type="text" class="form-control" v-model="data.pEmail" required>
                             </div>
 
 
-                            <div class="mb-3">   
+                            <!-- <div class="mb-3">   
                                 <select class="form-select text-center" v-model="data.department" required>
                                     <option value="" disabled>-- เลือกคณะ --</option>
                                     <option value="บริหารธุรกิจ">บริหารธุรกิจ</option>
                                     <option value="บัญชี">บัญชี</option>
                                     <option value="เทคโนโลยีสารสนเท">เทคโนโลยีสารสนเทศ</option>
                                 </select>
-                            </div>
+                            </div> -->
 
 
                             <button class="btn btn-primary w-100 fw-bold" :disabled="loading">
@@ -68,9 +93,11 @@
 import { reactive, ref } from "vue";
 
 const data = reactive({
-    id: "",
-    fullname: "",
-    department: ""
+    pID: "",
+    pName: "",
+    pQuantity: "",
+    pPrice: "",
+    pEmail: ""
 });
 
 const loading = ref(false);
@@ -85,7 +112,7 @@ const submitForm = async () => {
     status.message = "";
 
     try {
-        const response = await fetch("http://localhost:5678/webhook/register", {
+        const response = await fetch("http://localhost:5678/webhook/pSave", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -100,16 +127,25 @@ const submitForm = async () => {
             throw new Error("Error");
         }
 
-        const result = await response.json();
-        console.log(result);
+        // Safely parse the response (n8n defaults to plain text, not JSON)
+        const text = await response.text();
+        try {
+            const result = JSON.parse(text);
+            console.log("JSON Response:", result);
+        } catch (e) {
+            console.log("Text Response:", text);
+        }
 
         status.message = "✅ บันทึกข้อมูลสำเร็จ!";
         status.type = "success";
 
         // reset form
-        data.id = "";
-        data.fullname = "";
-        data.department = "";
+        data.pID = "";
+        data.pName = "";
+        data.pQuantity = "";
+        data.pPrice = "";
+        data.pEmail = "";
+
 
     } catch (error) {
         console.error(error);
